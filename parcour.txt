@@ -1,0 +1,49 @@
+1- Redaction du cahier des charges
+
+2- Conception de la base de données
+
+3- Développement ou la mise en place du projet
+
+4- Test
+
+5- Déploiement
+
+
+**Tables Users**
+1 user --> 1 library
+
+id --> primary key
+name --> varchar
+email --> varchar
+password --> varchar
+created_at --> TIMESTAMP
+
+
+**Tables libraries**
+1 library --> 1 ou ++ book
+
+id --> primary key
+name --> varchar
+user_id --> varchar
+created_at --> TIMESTAMP
+
+
+**Tables books**
+1 book --> 1 ou ++ loan
+
+id --> primary key
+title --> varchar
+author --> varchar
+genre --> varchar
+library_id --> varchar
+available --> boolean
+created_at --> TIMESTAMP
+
+**Tables loans**
+1 user --> 1 ou ++ loan
+
+id --> primary key
+user_id --> varchar
+book_id --> varchar
+created_at --> TIMESTAMP
+end_at --> TIMESTAMP

@@ -1,8 +1,12 @@
-# Library Management API
+# Library Management API Authentification Features
 
-Une API REST complète pour gérer un système de bibliothèques locales développée avec NestJS, TypeORM et MySQL.
+Une API REST complète pour gérer un système de bibliothèques locales développée avec NestJS, TypeORM et MySQL. Ici l'objectif principal est basé sur l'exercice de l'authentification et la gestion des utilisateurs qui se trouve sur la branche authenticate.
 
 ## 🎯 Fonctionnalités
+
+### Authentification
+- ✅ Authentifier un utilisateur
+- ✅ Créer un utilisateur
 
 ### Gestion des utilisateurs
 - ✅ Créer un utilisateur avec mot de passe hashé
@@ -53,95 +57,9 @@ Une API REST complète pour gérer un système de bibliothèques locales dévelo
 - MySQL (version 8.0+)
 - npm
 
-## 🛠️ Technologies utilisées
+### Étapes de test 
 
-- `NestJS` - Framework Node.js
-```bash
-  # 1. Installer NestJS CLI globalement
-  npm install -g @nestjs/cli
-
-  # 2. Créer le projet NestJS
-  nest new library-management
-  cd library-management
-
-  # 3. Configuration
-  npm install @nestjs/config
-```
-- `TypeORM` - ORM pour TypeScript & `MySQL` - Base de données
-```bash
-  # TypeORM et MySQL
-  npm install @nestjs/typeorm typeorm mysql2 uuid
-```
-- `Swagger` - Documentation API
-```bash
-  # Swagger pour la documentation
-  npm install @nestjs/swagger swagger-ui-express
-```
-- `bcrypt` - Hachage des mots de passe
-```bash
-  npm install bcrypt
-  npm install --save-dev @types/bcrypt
-```
-- `class-validator` - Validation des données
-```bash
-  # Validation des données
-  npm install class-validator class-transformer
-```
-- `Génération de modules NestJS`
-```bash
-  nest generate module users
-  nest generate controller users
-  nest generate service users
-  nest generate module libraries
-  nest generate controller libraries
-  nest generate service libraries
-  nest generate module books
-  nest generate controller books
-  nest generate service books
-  nest generate module loans
-  nest generate controller loans
-  nest generate service loans
-```
-
-- `Docker` - Containerisation (optionnel)
-```bash
-  docker-compose up -d                    # Démarrer tous les services"
-  docker-compose up mysql                 # Démarrer seulement MySQL"
-  docker-compose logs app                 # Voir les logs de l'application"
-  docker-compose exec mysql mysql -u root -p   # Se connecter à MySQL"
-  docker-compose down                     # Arrêter tous les services"
-```
-
-### Étapes d'installation
-
-1. **Cloner le projet**
-```bash
-git clone https://github.com/usdscommunity/c2-backend-semaine3-codechallenge-bayerane.git
-cd c2-backend-semaine3-codechallenge-bayerane
-```
-
-2. **Installer les dépendances**
-```bash
-npm install
-```
-
-3. **Configurer la base de données**
-```bash
-# Créer la base de données MySQL
-mysql -u root -p
-CREATE DATABASE library_db;
-```
-
-4. **Configurer les variables d'environnement**
-```bash
-# Copier le fichier d'exemple
-cp .env.example .env
-
-# Modifier les variables selon votre configuration
-nano .env
-```
-
-5. **Lancer l'application**
+1. **Lancer l'application**
 ```bash
 # Mode développement
 npm run start:dev
@@ -150,7 +68,7 @@ npm run start:dev
 npm run build
 npm run start:prod
 ```
-6. **Commandes de build**
+2. **Commandes de build**
 ```bash
   npm run build          # Construction de l'application"
   npm run format         # Formatage du code avec Prettier"
@@ -166,15 +84,18 @@ La documentation interactive est disponible sur : `http://localhost:3000/api`
 
 ### Endpoints principaux
 
-#### Users
+#### Authentification
+- `POST /auth/register` - Créer un utilisateur
+- `POST /auth/login` - Connexion d'un utilisateur
+
+#### Users (Protéger par authentification)
 - `GET /users` - Lister tous les utilisateurs
-- `POST /users` - Créer un utilisateur
 - `GET /users/:id` - Récupérer un utilisateur
 - `PATCH /users/:id` - Mettre à jour un utilisateur
 - `DELETE /users/:id` - Supprimer un utilisateur
 - `GET /users/:id/loans` - Lister les prêts d'un utilisateur
 
-#### Libraries
+#### Libraries (Pas protéger par authentification)
 - `GET /libraries` - Lister toutes les bibliothèques
 - `POST /libraries` - Créer une bibliothèque
 - `GET /libraries/:id` - Récupérer une bibliothèque
@@ -182,7 +103,7 @@ La documentation interactive est disponible sur : `http://localhost:3000/api`
 - `DELETE /libraries/:id` - Supprimer une bibliothèque
 - `GET /libraries/user/:userId` - Récupérer la bibliothèque d'un utilisateur
 
-#### Books
+#### Books (Pas protéger par authentification)
 - `GET /books` - Lister tous les livres (avec filtres)
   - `?available=true` - Livres disponibles
   - `?genre=roman` - Filtrer par genre
@@ -194,7 +115,7 @@ La documentation interactive est disponible sur : `http://localhost:3000/api`
 - `DELETE /books/:id` - Supprimer un livre
 - `GET /books/library/:libraryId` - Lister les livres d'une bibliothèque
 
-#### Loans
+#### Loans (Pas protéger par authentification)
 - `GET /loans` - Lister tous les prêts
 - `POST /loans` - Emprunter un livre
 - `GET /loans/active` - Lister les prêts actifs
@@ -211,6 +132,18 @@ Le projet suit l'architecture modulaire de `NestJS` :
 
 ```
 src/
+├── auth/dto/
+│   ├── login.dto.ts          # DTO de login
+│   └── register.dto.ts       # DTO de registration
+├── auth/guards/
+│   └── local-auth.guard.ts   # Gestionnaire d'authentification
+├── auth/strategies/
+│   ├── jwt.strategy.ts       # Strategie JWT
+│   └── local.strategy.ts     # Strategie local
+├── auth/
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   └── auth.module.ts
 ├── users/
 │   ├── users.entity.ts       # Entité users avec relations
 │   ├── users.dto.ts          # DTOs de validation
@@ -218,6 +151,12 @@ src/
 │   ├── users.controller.ts   # Contrôleur REST
 │   ├── users.module.ts       # Module NestJS
 │   └── users.service.spec.ts # Tests unitaires
+├── libraries/
+│   ├── libraries.entity.ts
+│   ├── libraries.dto.ts
+│   ├── libraries.service.ts
+│   ├── libraries.controller.ts
+│   └── libraries.module.ts
 ├── libraries/
 │   ├── libraries.entity.ts
 │   ├── libraries.dto.ts
@@ -243,6 +182,9 @@ src/
 ## 🔒 Sécurité
 
 - Mots de passe hashés avec `bcrypt`
+- Authentification avec JWT
+- Strategie local
+- Strategie JWT
 - Validation des données avec `class-validator`
 - Protection contre les injections SQL avec `TypeORM`
 - Variables d'environnement pour la configuration sensible

@@ -1,0 +1,25 @@
+1 - Definit le type d'authentification 
+    : authentification stateless (JWT);
+
+2 - Creer les modules necessaires : UserModule, AuthModule
+
+3 - Creer les DTOs necessaires : CreateUserDto, UpdateUserDto, LoginDto, SignupDto
+
+4 - Configurer de la strategie d'authentification JWT
+
+* Logique pour le service de l'auth:
+  - 
+
+5 - Hashage des mots de passe : bcrypt
+
+6 - Creer les routes d'authentification :
+    - signup (/auth/signup)
+    - login (/auth/login)
+    - forgot-password (/auth/forgot-password): envoie un email pour reinitialiser le mot de passe(Nodemailer: SMTP Gmail)
+    - reset-password (/auth/reset-password): reinitialiser le mot de passe
+
+7 - Generer et signer le JWT
+
+8 - Proteger les routes par authentification JWT
+
+
